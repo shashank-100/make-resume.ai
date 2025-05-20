@@ -1,4 +1,5 @@
 import React from 'react';
+import { Education } from './Education';
 
 interface PersonalDetails {
   fullName: string;
@@ -12,17 +13,6 @@ interface WorkExperience {
   id: string;
   company: string;
   position: string;
-  startDate: string;
-  endDate: string;
-  current: boolean;
-  description: string;
-}
-
-interface Education {
-  id: string;
-  institution: string;
-  degree: string;
-  field: string;
   startDate: string;
   endDate: string;
   current: boolean;
@@ -210,8 +200,18 @@ const Finalize: React.FC<FinalizeProps> = ({ resumeData, onBack, onGenerate }) =
                                   <p className="text-sm text-gray-500 dark:text-gray-400">
                                     {edu.startDate} - {edu.current ? 'Present' : edu.endDate}
                                   </p>
-                                  {edu.description && (
-                                    <p className="mt-2 text-gray-600 dark:text-gray-300">{edu.description}</p>
+                                  {edu.gpa && (
+                                    <p className="text-gray-600 dark:text-gray-300">GPA: {edu.gpa}</p>
+                                  )}
+                                  {edu.achievements.length > 0 && (
+                                    <div className="mt-2">
+                                      <h4 className="font-semibold text-gray-700 dark:text-gray-300">Achievements:</h4>
+                                      <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                                        {edu.achievements.map((achievement, index) => (
+                                          <li key={index}>{achievement}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
                                   )}
                                 </div>
                               ))}

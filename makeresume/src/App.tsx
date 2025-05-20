@@ -7,11 +7,12 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import PersonalDetails from "./components/PersonalDetails";
 import WorkHistory from './components/WorkHistory';
-import Education from './components/Education';
+import Education, { Education as EducationType } from './components/Education';
 import Certifications from './components/Certifications';
 import Skills from './components/Skills';
 import Interests from './components/Interests';
 import Finalize from './components/Finalize';
+import LandingPage from './components/LandingPage';
 
 interface PersonalDetailsData {
   fullName: string;
@@ -29,6 +30,7 @@ interface WorkExperience {
   endDate: string;
   current: boolean;
   description: string;
+  achievements: string[];
 }
 
 interface EducationData {
@@ -39,7 +41,8 @@ interface EducationData {
   startDate: string;
   endDate: string;
   current: boolean;
-  description: string;
+  gpa: string;
+  achievements: string[];
 }
 
 interface Certification {
@@ -70,13 +73,14 @@ interface Interest {
 interface ResumeData {
   personalDetails: PersonalDetailsData;
   workHistory: WorkExperience[];
-  education: EducationData[];
+  education: EducationType[];
   certifications: Certification[];
   skills: Skill[];
   interests: Interest[];
 }
 
 function App() {
+  const [showLandingPage, setShowLandingPage] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [goals, setGoals] = useState("");
@@ -102,6 +106,9 @@ function App() {
     skills: [],
     interests: []
   });
+
+  const [workExperiences, setWorkExperiences] = useState<WorkExperience[]>([]);
+  const [education, setEducation] = useState<EducationType[]>([]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,17 +157,11 @@ function App() {
   };
 
   const handleUpdateWorkHistory = (workHistory: WorkExperience[]) => {
-    setResumeData(prev => ({
-      ...prev,
-      workHistory
-    }));
+    setWorkExperiences(workHistory);
   };
 
-  const handleUpdateEducation = (education: EducationData[]) => {
-    setResumeData(prev => ({
-      ...prev,
-      education
-    }));
+  const handleEducationUpdate = (data: EducationType[]) => {
+    setEducation(data);
   };
 
   const handleUpdateCertifications = (certifications: Certification[]) => {
@@ -204,7 +205,7 @@ function App() {
           <WorkHistory
             onNext={handleNextStep}
             onBack={handleBackStep}
-            data={resumeData.workHistory}
+            data={workExperiences}
             onUpdate={handleUpdateWorkHistory}
           />
         );
@@ -213,8 +214,8 @@ function App() {
           <Education
             onNext={handleNextStep}
             onBack={handleBackStep}
-            data={resumeData.education}
-            onUpdate={handleUpdateEducation}
+            data={education}
+            onUpdate={handleEducationUpdate}
           />
         );
       case 3:
@@ -256,6 +257,10 @@ function App() {
         return null;
     }
   };
+
+  if (showLandingPage) {
+    return <LandingPage onStartResume={() => setShowLandingPage(false)} />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f7f9f9] font-sans">
